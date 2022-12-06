@@ -1,0 +1,383 @@
+import random
+import time
+
+from pygame import Rect
+from pygame.display import get_desktop_sizes
+from pygame.math import Vector2
+import core
+
+
+def jeu1():
+    def setup():
+        print("Setup START---------")
+        core.fps = 60
+        ff = get_desktop_sizes()
+        print(get_desktop_sizes())
+        ffa = ff[0]
+        ffx= ffa[0]
+        ffy = ffa[1]
+        core.WINDOW_SIZE = [ffx, ffy]
+        core.memory( "VVaisseau", Vector2(0,-2))
+        core.memory("origine", Vector2(440,440))
+        core.memory("AVaisseau",Vector2(0,0))
+        core.memory("projectiles",[])
+        core.memory("Score",0)
+        core.memory("Targets",[])
+        core.memory("Contact", 0)
+        core.memory("frequence", 3.6)
+        core.memory("perdu", 0)
+        core.memory("Targets1",[])
+        core.memory("Bonus",[])
+        core.memory("Pointsbonus",0)
+        core.memory("Start", 0)
+        core.memory("etat",0)
+
+
+        print("Setup END-----------")
+
+    def CreationTir() :
+
+        p = core.memory("origine")
+        v = Vector2(core.memory("VVaisseau"))
+        r = 6
+        c = ( 255 , 160 , 160 )
+        st = time.time()
+        v.scale_to_length(v.length() + 10)
+
+        core.memory("projectiles").append({"position" : p , "vitesse" : v , "rayon" : r , "couleur" : c , "starttime" : st})
+
+        if core.memory("Pointsbonus") > 0 :
+
+            for angle in range(360) :
+                p = core.memory("origine")
+                v = Vector2(core.memory("VVaisseau")).rotate(angle * 1)
+                r = 5
+                c = (253, 108, 158)
+                st = time.time()
+                v.scale_to_length(v.length() + 10)
+
+                core.memory("projectiles").append({"position": p, "vitesse": v, "rayon": r, "couleur": c, "starttime": st})
+                core.memory("Pointsbonus", core.memory("Pointsbonus")-1)
+
+
+
+    def CreationTarget() :
+        ff = get_desktop_sizes()
+        print(get_desktop_sizes())
+        ffa = ff[0]
+        ffx= ffa[0]
+        ffy = ffa[1]
+        if random.randint(1,2) == 1 :
+            if random.randint(1,2)== 1  :
+                Tx = random.randint(0, ffx)
+                Ty = 0
+            else :
+                Tx = random.randint(0, ffx)
+                Ty = ffy
+        else :
+            if random.randint(1,2)== 1  :
+                Ty = random.randint(0, ffy)
+                Tx = 0
+            else :
+                Ty = random.randint(0, ffy)
+                Tx = ffx
+
+        if Tx > 440:
+            Vx = -1
+
+        else:
+            Vx = 1
+
+        if Ty > 440:
+            Vy = -1
+
+        else:
+            Vy = 1
+
+        Vt = Vector2(Vx,Vy)
+        Vector2(Vt).scale_to_length(20)
+        st = time.time()
+
+        core.memory("Targets").append({"Target" : Rect(Tx, Ty, 50, 50) , "Vitesse" : Vt , "starttime" : st })
+    def restart() :
+
+        if core.memory("perdu")==3 :
+            None
+
+
+        else :
+            core.memory("perdu",core.memory("perdu") +1)
+            core.memory("VVaisseau", Vector2(0, -2))
+            core.memory("origine", Vector2(440, 440))
+            core.memory("AVaisseau", Vector2(0, 0))
+            core.memory("projectiles", [])
+            core.memory("Targets", [])
+            core.memory("Contact", 0)
+            core.memory("frequence", 3.6)
+            core.memory("Targets1", [])
+            core.memory("Bonus",[])
+            core.memory("Pointsbonus",0)
+
+        if core.getKeyPressList("SPACE") :
+            core.memory("Start",0)
+
+
+    def run() :
+        if core.getKeyPressList("SPACE") :
+            core.memory("Start",1)
+
+        if core.memory("Start")<1 :
+
+            core.Draw.text((255,255,255),"espace : jouer",(400,420),30)
+            core.Draw.text((255, 255, 255), "S : ralentir ", (400, 450), 30)
+            core.Draw.text((255, 255, 255), "Z : accelerer ", (400, 480), 30)
+            core.Draw.text((255, 255, 255), "D : aller à droite", (400, 510), 30)
+            core.Draw.text((255, 255, 255), "Q : aller à gauche", (400, 540), 30)
+
+        else :
+
+
+
+            if core.memory("perdu") == 3 :
+
+                
+                core.Draw.text((255,255,255)," PERDU !", (400,420),30)
+                core.memory('etat', 2)
+
+
+            else :
+
+                core.cleanScreen()
+
+                core.memory("origine", core.memory("origine") + core.memory("VVaisseau")+core.memory("AVaisseau"))
+    #Back
+
+
+
+    #Nombre de vies
+
+
+    #Temps
+                if core.memory("Contact") == 1  and core.memory("frequence") > 0.5 :
+                    core.memory("frequence", core.memory("frequence") - 0.05)
+                    core.memory("Contact", core.memory("Contact") -1)
+
+
+
+    # Deplacements
+
+
+
+                if core.getKeyPressList("z") and core.memory("VVaisseau").length()<15:
+                    core.memory("VVaisseau").scale_to_length(core.memory("VVaisseau").length()+1)
+                    if core.memory("AVaisseau").x < 0.3 :
+                        core.memory("AVaisseau",core.memory("AVaisseau")+(0.1,0))
+
+                if core.getKeyPressList("s") and core.memory("VVaisseau").length()>2:
+                    core.memory("VVaisseau").scale_to_length(core.memory("VVaisseau").length()-1)
+                    if core.memory("AVaisseau").x < 0.3 :
+                        core.memory("AVaisseau", core.memory("AVaisseau")+(-0.1, 0))
+
+                if core.getKeyPressList("q"):
+                    core.memory("VVaisseau", core.memory("VVaisseau").rotate(-5))
+                    if core.memory("AVaisseau").y < 0.3 :
+                        core.memory("AVaisseau",core.memory("AVaisseau")+(0,-0.05))
+
+                if core.getKeyPressList("d"):
+                    core.memory("VVaisseau", core.memory("VVaisseau").rotate(5))
+                    if core.memory("AVaisseau").y < 0.3 :
+                        core.memory("AVaisseau",core.memory("AVaisseau")+ (0,0.05))
+
+    #Vaisseau
+                ff = get_desktop_sizes()
+                print(get_desktop_sizes())
+                ffa = ff[0]
+                ffx = ffa[0]
+                ffy = ffa[1]
+                p1 = core.memory("VVaisseau")
+                p1 = Vector2(p1).rotate(360)
+                p1.scale_to_length(30)
+                p1 = p1 + core.memory("origine")
+
+                p2 = core.memory("VVaisseau")
+                p2 = Vector2(p2).rotate(90)
+                p2.scale_to_length(10)
+                p2 = p2 + core.memory("origine")
+
+                p3 = core.memory("VVaisseau")
+                p3 = Vector2(p3).rotate(-90)
+                p3.scale_to_length(10)
+                p3 = p3 + core.memory("origine")
+
+
+                core.Draw.polygon( (255,255,255) , (p1,p2,p3) )
+
+
+    #Tir
+                if core.getKeyPressList("SPACE") :
+                    if len(core.memory("projectiles"))>0 :
+
+                        if time.time() - core.memory("projectiles")[-1]["starttime"]> 0.5 :
+                            CreationTir()
+                    else :
+                        CreationTir()
+
+
+
+
+    #movetir
+
+                for proj in core.memory("projectiles") :
+
+                    if  time.time() - proj["starttime"] > 10 :
+                        core.memory("projectiles").remove(proj)
+
+                    proj["position"] = proj["position"] + proj["vitesse"]
+
+                    core.Draw.circle(proj["couleur"],proj["position"],proj["rayon"])
+
+
+                    if len(core.memory("Targets1")) > 0:
+
+                        for Target2 in core.memory("Targets1"):
+                            if Rect.collidepoint(Target2["Target1"], proj["position"].x, proj["position"].y):
+                                if random.randint(0,9) == 1 :
+
+                                    core.memory("Bonus").append({"bonus": Rect(Target2["Target1"].x,Target2["Target1"].y,15,15)})
+
+
+                                core.memory("Targets1").remove(Target2)
+
+                                core.memory("projectiles").remove(proj)
+                                core.memory("Score", core.memory("Score") + 5)
+                                core.memory("Contact", core.memory("Contact") + 0.5)
+                    if len(core.memory("Bonus")) > 0 :
+                        for bonus1 in core.memory("Bonus"):
+                            core.Draw.rect((255, 255, 0), bonus1["bonus"])
+                            if Rect.collidepoint(bonus1["bonus"], core.memory("origine")) :
+
+                                core.memory("Pointsbonus", 1)
+                                core.memory("Bonus").remove(bonus)
+
+
+
+
+    #Collisions Target
+                    if len(core.memory("Targets"))>0 :
+
+                        for Target in core.memory("Targets")   :
+                            if Rect.collidepoint(Target["Target"],proj["position"].x,proj["position"].y) :
+
+
+
+
+
+
+                        # Création petit target
+
+                                Tva = Vector2(Target["Vitesse"]).rotate(90)
+                                Tva.scale_to_length(5)
+                                Tvb = Vector2(Target["Vitesse"]).rotate(-90)
+                                Tvb.scale_to_length(5 )
+
+
+
+                                core.memory("Targets1").append({"Target1" : Rect(Target["Target"].x, Target["Target"].y , 25 , 25), "Vitesse" : Vector2(Tva) })
+                                core.memory("Targets1").append({"Target1" : Rect(Target["Target"].x, Target["Target"].y , 25 , 25), "Vitesse" : Vector2(Tvb) })
+
+
+
+
+
+
+                                core.memory("Targets").remove(Target)
+                                core.memory("projectiles").remove(proj)
+                                core.memory("Score",core.memory("Score") + 10)
+                                core.memory("Contact", 1)
+
+
+
+
+        #collisions vaisseau Target
+                Py = (core.memory("origine").y)
+                Px = (core.memory("origine").x)
+                for Target in core.memory("Targets"):
+                    if Rect.collidepoint(Target["Target"], core.memory("origine").x, core.memory("origine").y) :
+
+                        restart()
+
+
+
+                if len(core.memory("Targets")) > 0:
+                    for Target in core.memory("Targets") :
+
+                        Dcx = Target["Target"].x + Vector2(Target["Vitesse"]).x
+                        Dcy = Target["Target"].y + Vector2(Target["Vitesse"]).y
+
+                        Target["Target"] = Rect((Dcx , Dcy , 50 ,50))
+
+                        core.Draw.rect((255, 0, 0), Target["Target"])
+
+                    if time.time() - core.memory("Targets")[-1]["starttime"]> core.memory("frequence") :
+                        CreationTarget()
+
+                else :
+                    CreationTarget()
+
+                s = str(core.memory("Score"))
+
+                core.Draw.text((255,255,255),"Score : "+s,(20,20),30)
+
+            #Collision vaisseau Target2
+
+
+
+
+    # Teleportation
+                ff = get_desktop_sizes()
+                print(get_desktop_sizes())
+                ffa = ff[0]
+                ffx = ffa[0]
+                ffy = ffa[1]
+                Py = (core.memory("origine").y)
+                Px = (core.memory("origine").x)
+
+                if Px < 0:
+                    core.memory("origine", (ffx, Py))
+
+                if Py < 0:
+                    core.memory("origine", (Px, ffy))
+
+                if Py > ffy:
+                    core.memory("origine", (Px, 0))
+
+                if Px > ffx:
+                    core.memory("origine", (0, Py))
+
+
+
+
+    #Suppression carré
+            ff = get_desktop_sizes()
+            print(get_desktop_sizes())
+            ffa = ff[0]
+            ffx = ffa[0]
+            ffy = ffa[1]
+            if len(core.memory("Targets1")) > 0:
+                for Target1 in core.memory("Targets1"):
+                    Dcx = Target1["Target1"].x
+                    Dcy = Target1["Target1"].y
+
+                    if Dcx > ffx or Dcx< -20 or Dcy > ffy or Dcy< -20 :
+                        core.memory("Targets1").remove(Target1)
+
+            if len(core.memory("Targets")) > 0:
+                for Target1 in core.memory("Targets"):
+                    Dcx = Target1["Target"].x
+                    Dcy = Target1["Target"].y
+
+                    if Dcx > ffx or Dcx < -20 or Dcy > ffy or Dcy < -20:
+                        core.memory("Targets").remove(Target1)
+
+    core.memory("etat", 1)
+    core.main(setup, run)
