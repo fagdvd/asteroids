@@ -82,13 +82,13 @@ def jeu1():
                 Ty = random.randint(0, ffy)
                 Tx = ffx
 
-        if Tx > 440:
+        if Tx > (ffx/2):
             Vx = -1
 
         else:
             Vx = 1
 
-        if Ty > 440:
+        if Ty > (ffy/2):
             Vy = -1
 
         else:
