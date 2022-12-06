@@ -1,0 +1,20 @@
+from pygame import Rect
+from pygame.display import get_desktop_sizes
+
+import core
+
+
+def gameover():
+    core.fps = 30
+    ff = get_desktop_sizes()
+    print(get_desktop_sizes())
+    ffa = ff[0]
+    ffx= ffa[0]
+    ffy = ffa[1]
+    core.Draw.rect((255,0,0),(300,400),(210,600),1)
+    core.Draw.text((255,255,255),"Rejouer",((ffx/2),(ffy/2)),50)
+
+    if core.getMouseLeftClick():
+        r = Rect(300,400,210,60)
+        if r.collidepoint(core.getMouseLeftClick().x, core.getMouseLeftClick()[1]):
+            core.memory("etat",2)
