@@ -1,0 +1,38 @@
+import random
+import time
+
+from pygame import Rect
+from pygame.display import get_desktop_sizes
+from pygame.math import Vector2
+import core
+from ASTEROIDS.gameover import gameover
+from ASTEROIDS.menu import menu
+from ASTEROIDS.jeu1 import jeu1
+
+
+def setup():
+    print("Setup START---------")
+    core.fps = 30
+    ff = get_desktop_sizes()
+    print(get_desktop_sizes())
+    ffa = ff[0]
+    ffx= ffa[0]
+    ffy = ffa[1]
+    core.WINDOW_SIZE = [ffx, ffy]
+    core.memory("etat",0)
+    core.memory("jeu2",0)
+    core.memory("gameover",0)
+
+    print("Setup END-----------")
+
+
+def run() :
+    core.cleanScreen()
+    if core.memory("etat")==0:
+        menu()
+    if core.memory("etat")==1:
+        jeu1()
+    if core.memory("etat")==2:
+        gameover()
+
+core.main(setup,run)
