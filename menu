@@ -1,0 +1,37 @@
+import random
+import time
+from pygame import Rect
+from pygame.display import get_desktop_sizes
+from pygame.math import Vector2
+import core
+
+
+def menu():
+    core.fps = 30
+    ff = get_desktop_sizes()
+    print(get_desktop_sizes())
+    ffa = ff[0]
+    ffx= ffa[0]
+    ffy = ffa[1]
+    core.WINDOW_SIZE = [ffx, ffy]
+    #core.Draw.rect((204, 169, 221), (300, 390, 210, 60))
+    #core.Draw.rect((154, 104, 175), (250, 300, 290, 60))
+    #core.Draw.text((255, 255, 255), "Nouvelle partie", (300, 400), 30)
+    #core.Draw.text((255, 255, 255), "Game Astéroids", (250, 300), 30)
+
+    #if core.getMouseLeftClick():
+        #r = Rect(300, 400, 210, 60)
+        #if r.collidepoint(core.getMouseLeftClick().x) == True:
+           # core.memory("etat",0)
+
+
+    core.Draw.rect((204, 169, 221),(280,295,210,60),5)
+
+    core.Draw.text((154, 104, 175),"nouvelle partie ",(300,300),30)
+
+    if core.getMouseLeftClick():
+        r = Rect(280,295,210,60)
+        if r.collidepoint(core.getMouseLeftClick()) == True :
+            #core.GetMouseLeftClick()[1]) :
+            core.memory('etat',1)
+
